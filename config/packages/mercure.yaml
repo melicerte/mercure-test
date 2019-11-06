@@ -2,4 +2,5 @@ mercure:
     hubs:
         default:
             url: '%env(MERCURE_PUBLISH_URL)%'
-            jwt: '%env(MERCURE_JWT_TOKEN)%'
+            # jwt: '%env(MERCURE_JWT_TOKEN)%'
+            jwt_provider: App\Mercure\MyJwtProvider

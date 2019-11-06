@@ -4,33 +4,48 @@ This repo is showing how to use mercure in Symfony. It is NOT usable in producti
 ## Install
 `composer install`
 
+## Start Symfony server
+```shell script
+bin/console server:start
+```
+
+=> Default port is 8000. This port is used for the rest of the README.
+If server starts on another port, modify port in commands below accordingly
+
 ## Start mercure server
 
 Start a mercure server locally on port 3080 (change at your convenience) :
 
-`docker run -e JWT_KEY='!ChangeMe!' -e ALLOW_ANONYMOUS=1 -e CORS_ALLOWED_ORIGINS=* -e PUBLISH_ALLOWED_ORIGINS='http://localhost' -p 3080:80 dunglas/mercure`
+```shell script
+docker run -e JWT_KEY='!ChangeMe!' -e ALLOW_ANONYMOUS=1 -e CORS_ALLOWED_ORIGINS='http://localhost:8000' -e PUBLISH_ALLOWED_ORIGINS='http://localhost' -p 3080:80 dunglas/mercure
+```
 
-## Public message
+## Send and receive messages
 
 ### Client : Subscribe to time request
 
-Copy/paste this code in your browser console.
+Go to http://localhost:8000/front/melicerte and http://localhost:8000/front/someguy
 
-```javascript
-const eventSource = new EventSource('http://localhost:3080/hub?topic=' + encodeURIComponent('http://localhost/time'));
-eventSource.onmessage = event => {
-    // Will be called every time an update is published by the server
-    console.log(JSON.parse(event.data));
-}
-```
+### Server : Send date and time to all clients
 
-### Server : Send time to client
-
-A command has been created to send time to Mercure server.
+A command has been created to send date adn time to all targets
 
 ```shell script
 bin/console app:send-time-message
 ```
 
-=> You should see something like this in your browser's console :
-`Object { time: 1572951883 }`
+=> Current date and time should appear in messages div on http://localhost:8000/front/melicerte and http://localhost:8000/front/someguy
+
+### Server Send private message
+
+```shell script
+bin/console app:send-targeted-message "This is a message to target melicerte" "http://localhost/user/melicerte"
+```
+
+=> Message should appear only on http://localhost:8000/front/melicerte
+
+```shell script
+bin/console app:send-targeted-message "This is a message to target someguy" "http://localhost/user/someguy"
+```
+
+=> Message should appear only on http://localhost:8000/front/someguy

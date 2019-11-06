@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FrontController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hi {{ username }} !</h1>
+
+    <h2>Your messages</h2>
+    <ul id="messages"></ul>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // URL is a built-in JavaScript class to manipulate URLs
+    const url = new URL('http://localhost:3080/hub');
+    url.searchParams.append('topic', 'http://localhost/time');
+    url.searchParams.append('topic', 'http://localhost/my-funky-resource');
+
+    const eventSource = new EventSource(url.href, { withCredentials: true });
+    eventSource.onmessage = event => {
+        const data = JSON.parse(event.data);
+        document.getElementById('messages').innerHTML += '<li>' + data.message + '</li>';
+    }
+
+</script>
+{% endblock %}
