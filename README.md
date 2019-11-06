@@ -4,6 +4,12 @@ This repo is showing how to use mercure in Symfony. It is NOT usable in producti
 ## Install
 `composer install`
 
+## Init database
+```shell script
+bin/console do:da:cr
+bin/console do:mi:mi
+```
+
 ## Start Symfony server
 ```shell script
 bin/console server:start
@@ -11,6 +17,7 @@ bin/console server:start
 
 => Default port is 8000. This port is used for the rest of the README.
 If server starts on another port, modify port in commands below accordingly
+
 
 ## Start mercure server
 
@@ -28,7 +35,7 @@ Go to http://localhost:8000/front/melicerte and http://localhost:8000/front/some
 
 ### Server : Send date and time to all clients
 
-A command has been created to send date adn time to all targets
+A command has been created to send date and time to all targets
 
 ```shell script
 bin/console app:send-time-message
@@ -49,3 +56,16 @@ bin/console app:send-targeted-message "This is a message to target someguy" "htt
 ```
 
 => Message should appear only on http://localhost:8000/front/someguy
+
+## Integration with API platform
+
+### Add books 
+```shell script
+bin/console app:add-book "Book name"
+```
+
+### Update book via API
+
+On http://localhost:8000/api => method PATCH
+
+=> Books must be updated on http://localhost:8000/front/melicerte and http://localhost:8000/front/someguy

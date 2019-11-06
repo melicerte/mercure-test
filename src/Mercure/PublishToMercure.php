@@ -4,6 +4,7 @@
 namespace App\Mercure;
 
 
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mercure\Publisher;
 use Symfony\Component\Mercure\Update;
 

@@ -1,33 +1,77 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FrontController!{% endblock %}
+{% block title %}Hello {{ username }}!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
 
-<div class="example-wrapper">
-    <h1>Hi {{ username }} !</h1>
+    <div class="example-wrapper">
+        <h1>Hi {{ username }} !</h1>
 
-    <h2>Your messages</h2>
-    <ul id="messages"></ul>
-</div>
+        <h2>Messages :</h2>
+        <ul id="messages"></ul>
+
+        <h2>Books</h2>
+        <table id="books" border="1">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Status</th>
+            </tr>
+        </table>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
-<script>
-    // URL is a built-in JavaScript class to manipulate URLs
-    const url = new URL('http://localhost:3080/hub');
-    url.searchParams.append('topic', 'http://localhost/time');
-    url.searchParams.append('topic', 'http://localhost/my-funky-resource');
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script>
+        // URL is a built-in JavaScript class to manipulate URLs
+        const url = new URL('http://localhost:3080/hub');
+        url.searchParams.append('topic', 'http://localhost/time');
+        url.searchParams.append('topic', 'http://localhost/my-funky-resource');
+        url.searchParams.append('topic', 'http://localhost:8000/api/books/{id}');
 
-    const eventSource = new EventSource(url.href, { withCredentials: true });
-    eventSource.onmessage = event => {
-        const data = JSON.parse(event.data);
-        document.getElementById('messages').innerHTML += '<li>' + data.message + '</li>';
-    }
+        const eventSource = new EventSource(url.href, { withCredentials: true });
+        eventSource.onmessage = event => {
+            const data = JSON.parse(event.data);
 
-</script>
+            // Simple message
+            if (data.message) {
+                document.getElementById('messages').innerHTML += '<li>' + data.message + '</li>';
+            }
+            // Book update
+            else {
+                $('#books tr.book-' + data.id + ' td.book-name').text(data.name);
+                $('#books tr.book-' + data.id + ' td.book-status').text(data.status);
+            }
+        }
+
+        (function($){
+            // Display books
+            $.get('http://localhost:8000/api/books?page=1', function(data, textStatus, jqXhr) {
+                data['hydra:member'].forEach(book => {
+                    let bookId = document.createElement('td');
+                    bookId.innerText = book['@id'];
+                    bookId.className = 'book-id';
+
+                    let bookName = document.createElement('td');
+                    bookName.innerText = book.name;
+                    bookName.className = 'book-name';
+
+                    let bookStatus = document.createElement('td');
+                    bookStatus.innerText = book.status;
+                    bookStatus.className = 'book-status';
+
+                    let bookLine = document.createElement('tr');
+                    bookLine.className = 'book-' + book.id;
+                    bookLine.innerHTML = bookId.outerHTML + bookName.outerHTML + bookStatus.outerHTML;
+
+                    $('#books').append(bookLine);
+                });
+            });
+        })(jQuery);
+    </script>
 {% endblock %}
