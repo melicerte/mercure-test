@@ -17,13 +17,21 @@ class FrontController extends AbstractController
      */
     private $mercureSecretKey;
 
-    public function __construct(string $mercureSecretKey)
+    /**
+     * @var string
+     */
+    private $mercureUri;
+
+    public function __construct(string $mercureSecretKey, string $mercureUri)
     {
         $this->mercureSecretKey = $mercureSecretKey;
+        $this->mercureUri = $mercureUri;
     }
 
     /**
      * @Route("/front/{username}", name="front")
+     * @param string $username
+     * @return Response
      */
     public function index(string $username)
     {
@@ -37,7 +45,8 @@ class FrontController extends AbstractController
 
         return $this->render('front/index.html.twig', [
             'username' => $username,
-            'controller_name' => 'FrontController',
+            'mercure_uri' => $this->mercureUri,
+
         ], $response);
     }
 }

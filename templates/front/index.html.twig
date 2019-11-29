@@ -29,7 +29,7 @@
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script>
         // URL is a built-in JavaScript class to manipulate URLs
-        const url = new URL('http://localhost:3080/hub');
+        const url = new URL('{{ mercure_uri }}');
         url.searchParams.append('topic', 'http://localhost/time');
         url.searchParams.append('topic', 'http://localhost/my-funky-resource');
         url.searchParams.append('topic', 'http://localhost:8000/api/books/{id}');
