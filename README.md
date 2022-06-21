@@ -2,7 +2,7 @@
 This repo is showing how to use mercure in Symfony. It is NOT usable in production.
 
 ## Install
-`composer install`
+`php composer.phar install`
 
 ## Init database
 ```shell script
@@ -24,7 +24,7 @@ If server starts on another port, modify port in commands below accordingly
 Start a mercure server locally on port 3080 (change at your convenience) :
 
 ```shell script
-docker run -e JWT_KEY='!ChangeMe!' -e ALLOW_ANONYMOUS=1 -e CORS_ALLOWED_ORIGINS='http://localhost:8000' -e PUBLISH_ALLOWED_ORIGINS='http://localhost' -p 3080:80 dunglas/mercure
+docker run -e JWT_KEY='!ChangeMe!' -e ALLOW_ANONYMOUS=1 -e CORS_ALLOWED_ORIGINS='http://localhost:8000' -e PUBLISH_ALLOWED_ORIGINS='http://localhost' -p 3080:80 dunglas/mercure:v0.8.0
 ```
 
 ## Send and receive messages
